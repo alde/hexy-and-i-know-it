@@ -1,4 +1,4 @@
-.PHONY: help test build run clean lint fmt coverage
+.PHONY: help test build run clean lint fmt coverage windows
 
 # Default target
 help:
@@ -7,6 +7,7 @@ help:
 	@echo "  make test      - Run all tests"
 	@echo "  make build     - Build the game binary"
 	@echo "  make run       - Build and run the game"
+	@echo "  make windows   - Cross-compile for Windows (creates game.exe)"
 	@echo "  make clean     - Remove build artifacts"
 	@echo "  make lint      - Run linter"
 	@echo "  make fmt       - Format code"
@@ -30,6 +31,14 @@ build:
 	@echo "Building game..."
 	go build -o hexy cmd/game/main.go
 
+# Cross-compile for Windows
+windows:
+	@echo "Cross-compiling for Windows..."
+	@echo "Note: Requires gcc-mingw-w64-x86-64 (install with: sudo apt-get install gcc-mingw-w64-x86-64)"
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=1 CC=x86_64-w64-mingw32-gcc go build -o /mnt/c/Temp/hexy.exe cmd/game/main.go
+	@echo "Windows executable created: C:\\Temp\\hexy.exe"
+	@echo "Run from Windows: C:\\Temp\\hexy.exe"
+
 # Build and run the game
 run: build
 	@echo "Running game..."
@@ -38,7 +47,7 @@ run: build
 # Clean build artifacts
 clean:
 	@echo "Cleaning..."
-	rm -f hexy coverage.out coverage.html
+	rm -f hexy game*.exe coverage.out coverage.html
 
 # Run linter
 lint:

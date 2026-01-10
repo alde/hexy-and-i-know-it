@@ -33,6 +33,14 @@ This is a learning project that demonstrates:
 
 - Go 1.23 or higher
 - Basic understanding of Go
+- **For Linux/WSL**: X11 development libraries
+  ```bash
+  sudo apt-get install libc6-dev libgl1-mesa-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxxf86vm-dev libasound2-dev pkg-config libx11-dev
+  ```
+- **For Windows cross-compilation from WSL**: MinGW
+  ```bash
+  sudo apt-get install gcc-mingw-w64-x86-64
+  ```
 
 ### Installation
 
@@ -52,6 +60,16 @@ go get github.com/pmcxs/hexgrid
 ```bash
 go run cmd/game/main.go
 ```
+
+### Building for Windows
+
+If you're developing on WSL and want to create a Windows executable:
+
+```bash
+make windows
+```
+
+This creates `game.exe` that runs natively on Windows without needing an X server.
 
 ## Learning Guide
 
