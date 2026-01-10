@@ -1,0 +1,69 @@
+# golangci-lint configuration for Hexy and I Know It
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    - gofmt
+    - goimports
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+    - typecheck
+    - misspell
+    - unconvert
+    - gocyclo
+    - gocritic
+    - revive
+
+  disable:
+    # Disable linters that are too strict for game development
+    - exhaustive
+    - exhaustruct
+    - varnamelen
+    - wrapcheck
+    - nlreturn
+    - wsl
+
+linters-settings:
+  gocyclo:
+    min-complexity: 20  # Game code can be complex
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    disabled-checks:
+      - commentFormatting  # Allow flexible comments
+      - whyNoLint         # Don't require explanation for nolint
+
+  revive:
+    rules:
+      - name: exported
+        disabled: true  # Don't require comments on all exports
+      - name: package-comments
+        disabled: true
+
+issues:
+  exclude-rules:
+    # Exclude test files from certain checks
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+
+    # Allow global variables in main package (game state)
+    - path: cmd/game/main\.go
+      text: "don't use global variables"
+
+  max-issues-per-linter: 0
+  max-same-issues: 0
