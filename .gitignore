@@ -13,6 +13,7 @@
 
 # Go workspace file
 go.work
+go.sum
 
 # Build directories
 /bin/
@@ -31,8 +32,8 @@ go.work
 Thumbs.db
 
 # Game-specific
-game
-hexy
+./game
+./hexy
 hexy-battler
 
 # Debug/profiling
