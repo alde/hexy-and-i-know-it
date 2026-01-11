@@ -30,31 +30,31 @@ Create an isometric hex grid that you can see and interact with using the mouse.
 
 ### Hex Grid Foundation
 - [x] Create `internal/hex/layout.go` for coordinate conversion
-- [ ] Define hex size and orientation constants
-- [ ] Implement pixel-to-hex conversion function
-- [ ] Implement hex-to-pixel conversion function
-- [ ] Write tests for coordinate conversion (see `internal/hex/hex_test.go`)
+- [x] Define hex size and orientation constants
+- [x] Implement pixel-to-hex conversion function
+- [x] Implement hex-to-pixel conversion function
+- [x] Write tests for coordinate conversion (see `internal/hex/hex_test.go`)
 
 ### Grid Rendering
-- [ ] Create a hex texture/sprite (or draw programmatically)
-- [ ] Render a 10x10 hex grid
-- [ ] Apply isometric transformation
-- [ ] Color hexes in a checkerboard pattern
-- [ ] Add coordinate labels to hexes
+- [x] Create a hex texture/sprite (or draw programmatically)
+- [x] Render a 10x10 hex grid
+- [x] Apply isometric transformation
+- [x] Color hexes in a checkerboard pattern
+- [x] Add coordinate labels to hexes
 
 ### Mouse Interaction
-- [ ] Detect mouse position
-- [ ] Convert mouse position to hex coordinates
-- [ ] Highlight hex under mouse cursor
-- [ ] Click to select a hex
-- [ ] Show selected hex coordinates
+- [x] Detect mouse position
+- [x] Convert mouse position to hex coordinates
+- [x] Highlight hex under mouse cursor
+- [x] Click to select a hex
+- [x] Show selected hex coordinates
 
 ### Testing
-- [ ] Run tests: `go test ./internal/hex`
-- [ ] Grid renders correctly
-- [ ] Mouse hover highlights correct hex
-- [ ] Clicking selects the right hex
-- [ ] Coordinate labels match expected positions
+- [x] Run tests: `go test ./internal/hex`
+- [x] Grid renders correctly
+- [x] Mouse hover highlights correct hex
+- [x] Clicking selects the right hex
+- [x] Coordinate labels match expected positions
 
 ## Hex Grid Theory
 
@@ -656,9 +656,9 @@ In [Milestone 3](03-milestone-ecs-setup.md), you'll add the Entity Component Sys
 
 ## Extra Challenges (Optional)
 
-- [ ] Highlight hexes within range of selected hex
-- [ ] Implement hex pathfinding (A*)
-- [ ] Draw hex grid with sprite textures
-- [ ] Add zoom in/out functionality
-- [ ] Show distance from selected hex to hovered hex
-- [ ] Implement hex field-of-view algorithm
+- [x] Highlight hexes within range of selected hex
+- [x] Implement hex pathfinding (A*)
+- [x] Draw hex grid with sprite textures
+- [x] Add zoom in/out functionality
+- [x] Show distance from selected hex to hovered hex
+- [x] Implement hex field-of-view algorithm
