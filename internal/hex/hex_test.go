@@ -11,7 +11,7 @@ func TestHexToPixel(t *testing.T) {
 
 	tests := []struct {
 		name string
-		q, r int
+		q, r int64
 	}{
 		{"origin", 0, 0},
 		{"positive q", 1, 0},
@@ -41,9 +41,9 @@ func TestPixelToHex(t *testing.T) {
 	layout := NewLayout()
 
 	tests := []struct {
-		name      string
-		x, y      float64
-		wantQ, wantR int
+		name         string
+		x, y         float64
+		wantQ, wantR int64
 	}{
 		{"center of screen", OffsetX, OffsetY, 0, 0},
 		// Add more tests after you verify the first one works
@@ -66,7 +66,7 @@ func TestRoundTrip(t *testing.T) {
 	layout := NewLayout()
 
 	tests := []struct {
-		q, r int
+		q, r int64
 	}{
 		{0, 0},
 		{1, 0},

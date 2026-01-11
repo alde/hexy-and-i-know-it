@@ -9,25 +9,52 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/vector"
+
+	"github.com/alde/hexy-and-i-know-it/internal/hex"
 )
 
 const (
-	screenWidth  = 1280
-	screenHeight = 720
+	screenWidth        = 1280
+	screenHeight       = 720
+	gridSize     int64 = 5
 )
+
+var emptyImage = ebiten.NewImage(3, 3)
+
+func init() {
+	emptyImage.Fill(color.White)
+}
 
 type Game struct {
 	updateCount int
 	bgColor     color.Color
 	debug       bool
+
+	Hex struct {
+		layout               *hex.Layout
+		hoveredQ, hoveredR   int64
+		selectedQ, selectedR int64
+	}
+
+	hasSelection bool
 }
 
-type ImageAndOpts struct {
-	image *ebiten.Image
-	opts  *ebiten.DrawImageOptions
-}
+func NewGame() *Game {
+	return &Game{
+		bgColor: color.RGBA{30, 30, 40, 255},
 
-var imageStore = map[string]*ImageAndOpts{}
+		Hex: struct {
+			layout               *hex.Layout
+			hoveredQ, hoveredR   int64
+			selectedQ, selectedR int64
+		}{
+			layout:    hex.NewLayout(),
+			selectedQ: -999,
+			selectedR: -999,
+		},
+	}
+}
 
 func (g *Game) Update() error {
 	g.updateCount++
@@ -35,6 +62,18 @@ func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		return ebiten.Termination
 	}
+
+	mx, my := ebiten.CursorPosition()
+	g.Hex.hoveredQ, g.Hex.hoveredR = g.Hex.layout.PixelToHex(float64(mx), float64(my))
+
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		if g.isValidHex(g.Hex.hoveredQ, g.Hex.hoveredR) {
+			g.Hex.selectedQ = g.Hex.hoveredQ
+			g.Hex.selectedR = g.Hex.hoveredR
+			g.hasSelection = true
+		}
+	}
+
 	if ebiten.IsKeyPressed(ebiten.KeyAlt) {
 		if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			ebiten.SetFullscreen(!ebiten.IsFullscreen())
@@ -55,22 +94,73 @@ func (g *Game) Update() error {
 	return nil
 }
 
+func (g *Game) isValidHex(q, r int64) bool {
+	return q >= -gridSize && q <= gridSize && r >= -gridSize && r <= gridSize
+}
+
+func (g *Game) drawHex(screen *ebiten.Image, q, r int64) {
+	corners := g.Hex.layout.GetCorners(q, r)
+
+	var hexColor color.Color
+
+	if g.hasSelection && g.Hex.selectedQ == q && g.Hex.selectedR == r {
+		hexColor = color.RGBA{100, 255, 100, 255}
+	} else if g.Hex.hoveredQ == q && g.Hex.hoveredR == r {
+		hexColor = color.RGBA{255, 255, 100, 255}
+	} else {
+		if (q+r)%2 == 0 {
+			hexColor = color.RGBA{60, 60, 80, 255}
+		} else {
+			hexColor = color.RGBA{50, 50, 70, 255}
+		}
+	}
+	var path vector.Path
+	path.MoveTo(corners[0].DstX, corners[0].DstY)
+	for i := 1; i < len(corners); i++ {
+		path.LineTo(corners[i].DstX, corners[i].DstY)
+	}
+	path.Close()
+	vertices, indices := path.AppendVerticesAndIndicesForFilling(nil, nil)
+
+	red, green, blue, alpha := hexColor.RGBA()
+	for i := range vertices {
+		vertices[i].ColorR = float32(red) / 0xffff
+		vertices[i].ColorG = float32(green) / 0xffff
+		vertices[i].ColorB = float32(blue) / 0xffff
+		vertices[i].ColorA = float32(alpha) / 0xffff
+	}
+	screen.DrawTriangles(vertices, indices, emptyImage, nil)
+
+	outlineColor := color.RGBA{100, 100, 120, 255}
+	for i := 0; i < 6; i++ {
+		next := (i + 1) % 6
+		vector.StrokeLine(screen, corners[i].DstX, corners[i].DstY, corners[next].DstX, corners[next].DstY, 2, outlineColor, false)
+	}
+
+	cx, cy := g.Hex.layout.HexToPixel(q, r)
+	coordText := fmt.Sprintf("(%d,%d)", q, r)
+	// Approximate text positioning
+	ebitenutil.DebugPrintAt(screen, coordText, int(cx)-15, int(cy)-5)
+}
+
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(g.bgColor)
 
-	for name, imgAndOpts := range imageStore {
-		if name == "exampleRect1" {
-
-			imgAndOpts.opts.GeoM.Reset()
-			imgAndOpts.opts.GeoM.Translate(
-				75+float64(g.updateCount%200),
-				75+float64(g.updateCount%150),
-			)
+	for q := -gridSize; q <= gridSize; q++ {
+		for r := -gridSize; r <= gridSize; r++ {
+			g.drawHex(screen, q, r)
 		}
-		screen.DrawImage(imgAndOpts.image, imgAndOpts.opts)
 	}
 
-	ebitenutil.DebugPrint(screen, "Hexy and I Know It\nPress SPACE to change background color\nPress ESC to quit")
+	msg := fmt.Sprintf("Milestone 2 - Hex Grid\nHovered Hex: (%d, %d)", g.Hex.hoveredQ, g.Hex.hoveredR)
+	if g.hasSelection {
+		msg += fmt.Sprintf("\nSelected Hex: (%d, %d)", g.Hex.selectedQ, g.Hex.selectedR)
+	} else {
+		msg += "\nClick a hex to select it"
+	}
+	msg += "\nPress ALT+D to toggle debug info\nPress ALT+ENTER to toggle fullscreen\nPress ESC to quit"
+
+	ebitenutil.DebugPrintAt(screen, msg, 10, 10)
 
 	if g.debug {
 		mouseX, mouseY := ebiten.CursorPosition()
@@ -87,14 +177,7 @@ func (g *Game) Layout(outsideWidth, ousideHeight int) (int, int) {
 }
 
 func main() {
-	game := &Game{
-		bgColor: color.RGBA{30, 30, 40, 255},
-	}
-
-	imageStore = map[string]*ImageAndOpts{
-		"exampleRect0": createRectangle(200, 100, color.RGBA{100, 150, 200, 200}, 50, 50),
-		"exampleRect1": createRectangle(300, 200, color.RGBA{200, 100, 150, 200}, 75, 75),
-	}
+	game := NewGame()
 
 	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Hexy and I Know It")
@@ -102,16 +185,5 @@ func main() {
 	if err := ebiten.RunGame(game); err != nil {
 		slog.Error("failed to run game", "error", err)
 		os.Exit(1)
-	}
-}
-
-func createRectangle(posX, posY int, color color.Color, sizeX, sizeY int) *ImageAndOpts {
-	rect := ebiten.NewImage(posX, posY)
-	rect.Fill(color)
-	opts := &ebiten.DrawImageOptions{}
-	opts.GeoM.Translate(float64(sizeX), float64(sizeY))
-	return &ImageAndOpts{
-		image: rect,
-		opts:  opts,
 	}
 }

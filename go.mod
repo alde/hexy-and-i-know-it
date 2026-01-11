@@ -6,8 +6,11 @@ require (
 	github.com/ebitengine/gomobile v0.0.0-20250923094054-ea854a63cce1 // indirect
 	github.com/ebitengine/hideconsole v1.0.0 // indirect
 	github.com/ebitengine/purego v0.9.0 // indirect
+	github.com/gojuno/go.hexgrid v0.0.0-20180202102557-99834856706c // indirect
+	github.com/gojuno/go.morton v0.0.0-20180202102823-94709bd871ce // indirect
 	github.com/hajimehoshi/ebiten/v2 v2.9.7 // indirect
 	github.com/jezek/xgb v1.1.1 // indirect
+	github.com/pmcxs/hexgrid v0.0.0-20190126214921-42796ac894ab // indirect
 	github.com/yohamta/donburi v1.15.7 // indirect
 	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect

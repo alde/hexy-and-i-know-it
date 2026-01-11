@@ -1,5 +1,14 @@
 # Milestone 2: Hex Grid Rendering
 
+### ISSUES FOUND
+pmcxs/hexgrid doesn't work (doesn't have the expected functions) - had to adapt to use 
+```go
+import (
+	hx "github.com/gojuno/go.hexgrid"
+	morton "github.com/gojuno/go.morton"
+)
+```
+
 ## Goal
 
 Create an isometric hex grid that you can see and interact with using the mouse.
@@ -20,7 +29,7 @@ Create an isometric hex grid that you can see and interact with using the mouse.
 ## Tasks
 
 ### Hex Grid Foundation
-- [ ] Create `internal/hex/layout.go` for coordinate conversion
+- [x] Create `internal/hex/layout.go` for coordinate conversion
 - [ ] Define hex size and orientation constants
 - [ ] Implement pixel-to-hex conversion function
 - [ ] Implement hex-to-pixel conversion function
