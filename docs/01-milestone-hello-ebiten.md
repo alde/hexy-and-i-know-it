@@ -417,9 +417,9 @@ In [Milestone 2](02-milestone-hex-grid.md), you'll render an isometric hex grid 
 
 Want to explore more? Try these:
 
-- [ ] Add mouse position tracking and display it
-- [ ] Draw multiple rectangles at different positions
-- [ ] Create a simple animation (moving rectangle)
-- [ ] Add more keyboard shortcuts
-- [ ] Change window title to show FPS
-- [ ] Try fullscreen mode: `ebiten.SetFullscreen(true)`
+- [x] Add mouse position tracking and display it
+- [x] Draw multiple rectangles at different positions
+- [x] Create a simple animation (moving rectangle)
+- [x] Add more keyboard shortcuts
+- [x] Change window title to show FPS
+- [x] Try fullscreen mode: `ebiten.SetFullscreen(true)`
