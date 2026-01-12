@@ -13,7 +13,6 @@
 
 # Go workspace file
 go.work
-go.sum
 
 # Build directories
 /bin/
